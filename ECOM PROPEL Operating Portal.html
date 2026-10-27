@@ -1,0 +1,540 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>ECOM PROPEL Operating Portal</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout : barre de navigation collante + une vue par espace (routage par #ancre), colonnes qui s'empilent sur mobile */
+:root{
+  --bg:#f5f7f8; --surface:#ffffff; --ink:#132026; --muted:#53636b; --line:#d9e1e4;
+  --accent:#0b6e72; --accent-ink:#ffffff; --soft:#e5f1f1;
+  --academy:#4b4fb8; --lab:#b0661a; --ops:#0b6e72; --group:#4d5c66;
+  --n1:#1f7a45; --n1bg:#e3f3e9; --n2:#9a6b00; --n2bg:#fbf1d9; --n3:#b3261e; --n3bg:#fbe5e3;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"Source Sans 3", "Segoe UI", system-ui, sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f171b; --surface:#16232a; --ink:#e6eef0; --muted:#9db0b7; --line:#2a3a42;
+  --accent:#4fc1c4; --accent-ink:#06282a; --soft:#173338;
+  --academy:#9da0ff; --lab:#f0a659; --ops:#4fc1c4; --group:#a9b8c1;
+  --n1:#6fd39a; --n1bg:#173326; --n2:#f0c35a; --n2bg:#352a10; --n3:#ff8a80; --n3bg:#3a1a18;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f171b; --surface:#16232a; --ink:#e6eef0; --muted:#9db0b7; --line:#2a3a42;
+  --accent:#4fc1c4; --accent-ink:#06282a; --soft:#173338;
+  --academy:#9da0ff; --lab:#f0a659; --ops:#4fc1c4; --group:#a9b8c1;
+  --n1:#6fd39a; --n1bg:#173326; --n2:#f0c35a; --n2bg:#352a10; --n3:#ff8a80; --n3bg:#3a1a18;
+  color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+a{color:var(--accent)}
+h1,h2,h3{font-family:var(--display);line-height:1.15;text-wrap:balance;margin:0}
+h1{font-size:clamp(1.8rem,5vw,2.6rem);font-weight:800}
+h2{font-size:1.45rem;font-weight:800}
+h3{font-size:1.08rem;font-weight:600}
+p{margin:0;max-width:68ch}
+.wrap{max-width:1040px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:12px;padding-block:10px;flex-wrap:wrap}
+.brand{font-family:var(--display);font-weight:800;letter-spacing:.02em;color:var(--ink);text-decoration:none;margin-right:auto;font-size:1.02rem}
+.brand small{display:block;font-family:var(--mono);font-size:.68rem;font-weight:500;color:var(--muted);letter-spacing:.08em}
+nav.tabs{display:flex;gap:4px;overflow-x:auto;max-width:100%}
+nav.tabs a{text-decoration:none;color:var(--muted);font-weight:600;font-size:.92rem;padding:6px 10px;border-radius:8px;white-space:nowrap}
+nav.tabs a[aria-current="page"]{background:var(--soft);color:var(--ink)}
+nav.tabs a:focus-visible,.btn:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+main{padding-block:28px 64px}
+.view{display:flex;flex-direction:column;gap:28px}
+.eyebrow{font-family:var(--mono);font-size:.74rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.lead{font-size:1.1rem;color:var(--muted)}
+.hero{display:flex;flex-direction:column;gap:12px}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr))}
+.grid2{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr))}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.pole{border-top:4px solid var(--c)}
+.pole .who{font-family:var(--mono);font-size:.78rem;color:var(--c);letter-spacing:.06em;text-transform:uppercase}
+.section{display:flex;flex-direction:column;gap:14px}
+.section>h2{padding-bottom:6px;border-bottom:1px solid var(--line)}
+ul,ol{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px}
+ol.steps{list-style:none;padding:0;counter-reset:s}
+ol.steps li{counter-increment:s;display:grid;grid-template-columns:30px 1fr;gap:10px;align-items:start}
+ol.steps li::before{content:counter(s);font-family:var(--mono);font-size:.8rem;width:26px;height:26px;border-radius:50%;background:var(--soft);color:var(--ink);display:grid;place-items:center;margin-top:1px}
+ul.check{list-style:none;padding:0}
+ul.check li{display:grid;grid-template-columns:22px 1fr;gap:8px}
+ul.check li::before{content:"";width:14px;height:14px;border:2px solid var(--muted);border-radius:3px;margin-top:5px}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+.btn{display:inline-flex;align-items:center;gap:6px;text-decoration:none;font-weight:600;font-size:.92rem;padding:9px 14px;border-radius:9px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;font-family:var(--body)}
+.btn::after{content:"↗";font-size:.8em;color:var(--muted)}
+.btn.int::after{content:"→"}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.primary::after{color:var(--accent-ink)}
+.btn.wait{border-style:dashed;color:var(--muted);cursor:default}
+.btn.wait::after{content:""}
+.mission{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));background:var(--soft);border-radius:12px;padding:16px}
+.mission dt{font-family:var(--mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.mission dd{margin:2px 0 0;font-weight:600}
+.lvl{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr))}
+.lvl .card{border-left:6px solid var(--lc)}
+.tag{display:inline-block;font-family:var(--mono);font-size:.75rem;padding:2px 8px;border-radius:999px;font-weight:500}
+.t1{background:var(--n1bg);color:var(--n1)} .t2{background:var(--n2bg);color:var(--n2)} .t3{background:var(--n3bg);color:var(--n3)}
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:560px;font-size:.94rem}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:500}
+tr:last-child td{border-bottom:0}
+.note{border:1px solid var(--line);border-left:5px solid var(--n2);background:var(--surface);border-radius:10px;padding:12px 14px;font-size:.95rem}
+.note.crit{border-left-color:var(--n3)}
+.copy{display:flex;flex-direction:column;gap:8px}
+.copy pre{margin:0;white-space:pre-wrap;font-family:var(--mono);font-size:.82rem;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:12px;overflow-x:auto}
+.copy button{align-self:flex-start}
+.timeline{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr))}
+.timeline .card.now{border:2px solid var(--accent)}
+.kpi{display:flex;flex-wrap:wrap;gap:8px}
+.kpi span{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:.9rem}
+.who-pick{display:flex;flex-wrap:wrap;gap:8px}
+.who-pick button{font-family:var(--body);font-weight:600;padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.who-pick button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+footer{border-top:1px solid var(--line);padding-block:20px;color:var(--muted);font-size:.86rem}
+@media (prefers-reduced-motion:no-preference){.view{animation:in .25s ease-out}@keyframes in{from{opacity:.4;transform:translateY(4px)}to{opacity:1;transform:none}}}
+</style>
+
+<header class="top"><div class="wrap">
+  <a class="brand" href="#accueil">ECOM PROPEL<small>OPERATING PORTAL · V1 · 27/10/2026</small></a>
+  <nav class="tabs" aria-label="Espaces">
+    <a href="#accueil">Accueil</a><a href="#academy">ACADEMY</a><a href="#lab">LAB</a><a href="#ops">OPS</a><a href="#group">GROUP</a><a href="#escalade">Escalade</a><a href="#reporting">Reporting</a>
+  </nav>
+</div></header>
+
+<main class="wrap">
+
+<!-- ACCUEIL -->
+<section class="view" id="v-accueil">
+  <div class="hero">
+    <span class="eyebrow">Guide opérationnel interne</span>
+    <h1>Bienvenue dans le système ECOM PROPEL</h1>
+    <p class="lead">Ce portail explique ce que chacun fait, comment le faire et quand alerter. Les fichiers restent dans Google Drive ; ici, tu trouves l'explication et le bon bouton.</p>
+  </div>
+
+  <div class="card">
+    <h3>Notre mission</h3>
+    <p>Donner aux e-commerçants d'Afrique de l'Ouest une infrastructure fiable : former (ACADEMY), construire et vendre (LAB), exécuter les commandes et sécuriser les fonds (OPS).</p>
+    <h3>Comment fonctionne le groupe</h3>
+    <ol class="steps">
+      <li><span><b>Chaque pôle a un responsable</b> qui exécute seul les opérations courantes, selon son espace et ses procédures.</span></li>
+      <li><span><b>Le groupe (GROUP)</b> coordonne : registre des actions et décisions, suivi des échéances, réunion hebdomadaire.</span></li>
+      <li><span><b>Ben</b> garde la vision, les décisions réservées et la supervision de la transition.</span></li>
+    </ol>
+  </div>
+
+  <div class="section">
+    <h2>Les espaces</h2>
+    <div class="grid">
+      <div class="card pole" style="--c:var(--academy)"><span class="who">Armel</span><h3>ACADEMY</h3><p>Communauté Skool, contenus, lives, progression des membres.</p><div class="btns"><a class="btn int" href="#academy">Ouvrir l'espace</a></div></div>
+      <div class="card pole" style="--c:var(--lab)"><span class="who">Olivier</span><h3>LAB</h3><p>Boutiques, prestations, clients, production, rentabilité.</p><div class="btns"><a class="btn int" href="#lab">Ouvrir l'espace</a></div></div>
+      <div class="card pole" style="--c:var(--ops)"><span class="who">Fatima</span><h3>OPS</h3><p>Commandes, logistique DLK, livraisons, rapprochements, reversements.</p><div class="btns"><a class="btn int" href="#ops">Ouvrir l'espace</a></div></div>
+      <div class="card pole" style="--c:var(--group)"><span class="who">Simisola</span><h3>GROUP MANAGEMENT</h3><p>Gouvernance : suivi des décisions, réunions, reporting consolidé.</p><div class="btns"><a class="btn int" href="#group">Ouvrir l'espace</a></div></div>
+    </div>
+    <p class="lead" style="font-size:.98rem">Les pôles <b>exécutent</b>. Le groupe <b>coordonne et contrôle</b>. Un pôle ne fait pas le travail d'un autre : un sujet qui touche deux pôles passe par GROUP.</p>
+  </div>
+
+  <div class="section">
+    <h2>Que dois-je faire maintenant ?</h2>
+    <div class="who-pick" role="group" aria-label="Je suis">
+      <button type="button" data-p="armel" id="p-armel">Je suis Armel</button>
+      <button type="button" data-p="olivier" id="p-olivier">Je suis Olivier</button>
+      <button type="button" data-p="fatima" id="p-fatima">Je suis Fatima</button>
+      <button type="button" data-p="simisola" id="p-simisola">Je suis Simisola</button>
+    </div>
+    <div id="now" class="card"></div>
+  </div>
+
+  <div class="grid2">
+    <div class="card"><h3>Ce que je peux décider seul</h3><p>Les trois niveaux N1, N2 et N3, avec des exemples par pôle.</p><div class="btns"><a class="btn int primary" href="#escalade">Voir les règles d'escalade</a></div></div>
+    <div class="card"><h3>Mon rapport de la semaine</h3><p>Un seul format pour tous, remis la veille de la réunion.</p><div class="btns"><a class="btn int" href="#reporting">Comment faire mon rapport</a></div></div>
+  </div>
+
+  <div class="note"><b>Un lien ne s'ouvre pas ?</b> Tous les fichiers sont protégés par les permissions Google. Si tu vois « Accès refusé », clique sur « Demander l'accès » dans Google, puis préviens Simisola. Ne demande jamais un mot de passe partagé.</div>
+</section>
+
+<!-- ACADEMY -->
+<section class="view" id="v-academy" hidden>
+  <div class="hero"><span class="eyebrow" style="color:var(--academy)">Pôle ACADEMY · Armel</span><h1>Faire vivre la communauté, sans attendre d'instruction</h1>
+  <p class="lead">Tu animes ECOM PROPEL ACADEMY sur Skool : publications, réponses, lives, progression des membres et passage vers l'offre Premium.</p></div>
+
+  <dl class="mission">
+    <div><dt>Résultat attendu</dt><dd>Communauté animée selon le calendrier, chiffres d'engagement chaque semaine</dd></div>
+    <div><dt>Première mission</dt><dd>État des lieux ACADEMY</dd></div>
+    <div><dt>Échéance</dt><dd>28/10/2026</dd></div>
+    <div><dt>Puis</dt><dd>7 jours de gestion autonome</dd></div>
+  </dl>
+  <div class="btns">
+    <a class="btn primary" href="https://www.skool.com/ecom-propel-academy-5299/about" target="_blank" rel="noopener">Ouvrir Skool</a>
+    <a class="btn" href="https://docs.google.com/document/d/13CFpmWglB50hszlJCdXayZC1Lw32yKv-lH4qxhQjA7I/edit" target="_blank" rel="noopener">Mon kit d'autonomie</a>
+    <a class="btn" href="https://drive.google.com/drive/folders/1t1sEiSbqru5ZKlp0kgZDSGIMbV4_ODwX" target="_blank" rel="noopener">Dossier ACADEMY</a>
+  </div>
+
+  <div class="grid2">
+    <div class="card"><h3>Chaque jour</h3><ul class="check"><li>Répondre aux questions des membres (aucune sans réponse plus de 24 h)</li><li>Modérer selon les règles</li><li>Publier ce qui est prévu au calendrier</li><li>Noter les questions qui reviennent</li></ul></div>
+    <div class="card"><h3>Chaque semaine</h3><ul class="check"><li>Préparer et animer le live prévu</li><li>Déposer le replay dans « Masterclass &amp; Replays »</li><li>Relancer les membres inactifs</li><li>Mettre à jour les KPI et remettre le rapport</li></ul></div>
+  </div>
+
+  <div class="section"><h2>L'état des lieux (sous 24 h)</h2>
+    <ol class="steps">
+      <li><span>Compter les membres Standard et Premium sur Skool.</span></li>
+      <li><span>Relever l'activité des 30 derniers jours (publications, commentaires, lives).</span></li>
+      <li><span>Lister les modules vides ou incomplets du Classroom.</span></li>
+      <li><span>Lister les questions restées sans réponse.</span></li>
+      <li><span>Indiquer la date du prochain live et les accès qui te manquent.</span></li>
+      <li><span>Envoyer le tout à Simisola et le déposer dans ton dossier ACADEMY.</span></li>
+    </ol>
+  </div>
+
+  <div class="section"><h2>Le Classroom Skool</h2>
+    <p>Sept espaces, dans cet ordre : Commence ici · Produits physiques · Produits digitaux · Facebook &amp; Instagram Ads · WhatsApp Business &amp; Vente · Ressources Ecom · Masterclass &amp; Replays. Tu les alimentes, tu ne changes pas leur structure sans accord de Ben.</p>
+    <div class="grid2">
+      <div class="card"><span class="tag t1">Standard · gratuit</span><p>Accès d'entrée à la communauté.</p></div>
+      <div class="card"><span class="tag t2">Premium · 10 000 FCFA / mois</span><p>Offre payante. Le contenu exact de chaque niveau doit t'être remis par écrit par Ben lors du transfert.</p></div>
+    </div>
+  </div>
+
+  <div class="section"><h2>Mes indicateurs</h2>
+    <div class="kpi"><span>Membres Standard</span><span>Membres Premium</span><span>Nouveaux membres</span><span>Membres actifs</span><span>Publications réalisées / prévues</span><span>Lives et participants</span><span>Conversions Premium</span><span>Résiliations Premium</span><span>Questions sans réponse &gt; 24 h</span></div>
+    <div class="btns"><a class="btn" href="https://docs.google.com/spreadsheets/d/1asuZdYzwyyHPkgUhfycRwFeRg-6ystfDq-rkwgHNXVQ/edit" target="_blank" rel="noopener">Tableau KPI hebdo</a></div>
+  </div>
+
+  <div class="section"><h2>Ressources</h2>
+    <div class="btns">
+      <a class="btn" href="https://docs.google.com/spreadsheets/d/1f5nqIJSVyRNYM5T0DdH80NZmWGCr0jnVHTYiYTQrnHY/edit" target="_blank" rel="noopener">Ancien calendrier éditorial (avril 2025)</a>
+      <a class="btn" href="https://drive.google.com/drive/folders/1R61BZOnI3I6pbbHSz8fFsOkTWXKeZ-4A" target="_blank" rel="noopener">Calendrier, lives &amp; replays</a>
+      <a class="btn" href="https://drive.google.com/drive/folders/1W_frtHa1Mn3sk-XvBctIubqCgqy5SgDs" target="_blank" rel="noopener">Modération &amp; FAQ</a>
+    </div>
+    <div class="note"><b>Procédures à écrire ce mois-ci (par toi) :</b> règles de modération · FAQ des 15 questions fréquentes · checklist d'un live · parcours d'accueil d'un nouveau membre. Le calendrier éditorial date d'avril 2025 : il est à refaire.</div>
+  </div>
+
+  <div class="section"><h2>Quand escalader</h2>
+    <div class="grid2">
+      <div class="card"><span class="tag t1">N1 · tu décides</span><p>Publications prévues, réponses, modération selon les règles, live déjà validé, relances.</p></div>
+      <div class="card"><span class="tag t3">N3 · Ben autorise</span><p>Prix ou contenu des offres, Premium gratuit, exclusion d'un membre payant, structure du Classroom, intervenant extérieur, toute dépense.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- LAB -->
+<section class="view" id="v-lab" hidden>
+  <div class="hero"><span class="eyebrow" style="color:var(--lab)">Pôle LAB · Olivier</span><h1>Chaque dossier a une prochaine action et une date</h1>
+  <p class="lead">Tu prends en charge la production et le suivi commercial : prospects, prestations, livraisons, paiements et marge.</p></div>
+
+  <dl class="mission">
+    <div><dt>Résultat attendu</dt><dd>Dossiers à jour, livrables contrôlés, rentabilité connue</dd></div>
+    <div><dt>Première mission</dt><dd>État des lieux commercial et opérationnel</dd></div>
+    <div><dt>Échéance</dt><dd>28/10/2026</dd></div>
+    <div><dt>Puis</dt><dd>Faire avancer chaque dossier sans instruction</dd></div>
+  </dl>
+  <div class="btns">
+    <a class="btn primary" href="https://docs.google.com/document/d/1NHTQAi1srzdsrerWlzAepPlscO4_kwd1SNIj_vw4VSM/edit" target="_blank" rel="noopener">Mon kit d'autonomie</a>
+    <a class="btn" href="https://drive.google.com/drive/folders/1sXNS_jZAMt41sMYT5_agziI53uPqszD2" target="_blank" rel="noopener">Dossier LAB</a>
+  </div>
+
+  <div class="section"><h2>L'état des lieux (sous 24 h)</h2>
+    <p>Un tableau, une ligne par dossier, avec ces colonnes :</p>
+    <div class="kpi"><span>Client</span><span>Prestation</span><span>Statut</span><span>Prochaine action</span><span>Échéance</span><span>Facturé</span><span>Encaissé</span><span>Coûts engagés</span><span>Risque</span></div>
+    <p>Dépose-le dans « 02 — Clients &amp; Prestations actives » et préviens Simisola.</p>
+  </div>
+
+  <div class="section"><h2>Le cycle d'une prestation</h2>
+    <ol class="steps">
+      <li><span><b>Cadrer :</b> brief, accès, échéances, acompte. Devis aux tarifs en vigueur.</span></li>
+      <li><span><b>Produire :</b> planning, avancement quotidien, mise à jour du suivi.</span></li>
+      <li><span><b>Contrôler :</b> vérification qualité avant tout envoi.</span></li>
+      <li><span><b>Livrer :</b> envoi, corrections prévues au contrat.</span></li>
+      <li><span><b>Clôturer :</b> compte rendu au client, calcul de la marge (encaissé moins coûts directs), archivage.</span></li>
+    </ol>
+  </div>
+
+  <div class="grid2">
+    <div class="card"><h3>Chaque jour</h3><ul class="check"><li>Avancer la production selon les échéances</li><li>Répondre aux clients</li><li>Relancer les prospects prévus</li><li>Mettre le suivi à jour</li></ul></div>
+    <div class="card"><h3>Chaque semaine</h3><ul class="check"><li>Contrôle qualité avant chaque livraison</li><li>Point paiements attendus et impayés</li><li>KPI et rapport hebdomadaire</li></ul></div>
+  </div>
+
+  <div class="section"><h2>Documents commerciaux</h2>
+    <div class="btns">
+      <a class="btn" href="https://docs.google.com/document/d/1Vk-MG8yjwxfoum2o-siBNEp0xl4rlUJRzeGfleHc1nc/edit" target="_blank" rel="noopener">Offre commerciale</a>
+      <a class="btn" href="https://docs.google.com/document/d/1oFDpAWvr0IbV6-im87cqlYgoDWdNSkNgmNaBlp-R5oU/edit" target="_blank" rel="noopener">Contrat client</a>
+      <a class="btn" href="https://docs.google.com/document/d/1U7dnPZ5a1MHnmRpoZQCTh6Y2h_yzqp1PRepSxxRcFNc/edit" target="_blank" rel="noopener">Tunnel d'acquisition</a>
+      <a class="btn" href="https://drive.google.com/file/d/1gde7jVzRWIjcsExoQdMSvsWIFqFT7BHX/view" target="_blank" rel="noopener">Catalogue 72H</a>
+      <a class="btn" href="https://drive.google.com/file/d/1mGlGs_MNJahaXWXGiupBLP_3g7b4Mp_M/view" target="_blank" rel="noopener">Présentation Growth</a>
+      <a class="btn" href="https://drive.google.com/drive/folders/1g2aD86rYnHZIiVzABCmfm9s4oyyMlxY0" target="_blank" rel="noopener">Partenaires (media buyers)</a>
+    </div>
+    <div class="note"><b>À recevoir de Ben au transfert :</b> la liste des boutiques Shopify et Chariow concernées avec un accès personnel pour chacune, et la liste des prestations actives. <b>À écrire ce mois-ci :</b> checklist de démarrage, checklist qualité, modèles devis / relance / compte rendu.</div>
+  </div>
+
+  <div class="section"><h2>Mes indicateurs</h2>
+    <div class="kpi"><span>Dossiers actifs</span><span>Dossiers avec action datée</span><span>Livraisons à l'heure</span><span>Nouveaux prospects</span><span>Prospects convertis</span><span>CA encaissé</span><span>Impayés</span><span>Marge par prestation</span></div>
+  </div>
+
+  <div class="section"><h2>Quand escalader</h2>
+    <div class="grid2">
+      <div class="card"><span class="tag t1">N1 · tu décides</span><p>Planning, relances, devis aux tarifs en vigueur, livraison après contrôle, corrections prévues au contrat.</p></div>
+      <div class="card"><span class="tag t3">N3 · Ben autorise</span><p>Aucune dépense, achat publicitaire ou remboursement exceptionnel sans autorisation. Aussi : remise hors grille, nouveau prestataire payant, contrat ou avenant.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- OPS -->
+<section class="view" id="v-ops" hidden>
+  <div class="hero"><span class="eyebrow" style="color:var(--ops)">Pôle OPS · Fatima</span><h1>Chaque commande suivie, chaque franc rapproché</h1>
+  <p class="lead">Tu pilotes l'exécution : commandes, coordination DLK Express, livraisons, retours, rapprochements, reversements et relation marchands.</p></div>
+
+  <dl class="mission">
+    <div><dt>Résultat attendu</dt><dd>Zéro écart de caisse non justifié</dd></div>
+    <div><dt>Première mission</dt><dd>État des lieux OPS</dd></div>
+    <div><dt>Échéance</dt><dd>28/10/2026</dd></div>
+    <div><dt>Référence officielle</dt><dd>Fiche de poste OPS</dd></div>
+  </dl>
+  <div class="btns">
+    <a class="btn primary" href="https://docs.google.com/spreadsheets/d/15Vj8JmFv5MbUW8ZKjVLti_1TKHYuuv4iD_HT7c4c_I8/edit" target="_blank" rel="noopener">ORDER HUB (production)</a>
+    <a class="btn" href="https://docs.google.com/spreadsheets/d/1rw8xC9_1XdKO1WvhaVYEb2QMTWe_Hs0IpFNDk8eA0xg/edit" target="_blank" rel="noopener">ERP MASTER V2</a>
+    <a class="btn" href="https://docs.google.com/spreadsheets/d/1q2TnnVUxToqf0sUmn5dx0Cm7FLbWflTtnLNn73ExZTE/edit" target="_blank" rel="noopener">Saisie DLK</a>
+    <a class="btn" href="https://docs.google.com/document/d/1fbtu1noJSn-6SzgNsKjCzo-OiiN0qtf5MSpHJiksePU/edit" target="_blank" rel="noopener">Mon kit d'autonomie</a>
+    <a class="btn" href="https://drive.google.com/file/d/1UTBBJNIrzGkpEL1j3sDwn3ptC-UyTq7S/view" target="_blank" rel="noopener">Fiche de poste OPS</a>
+  </div>
+  <div class="note"><b>Version qui fait foi :</b> « ECOM PROPEL — ORDER HUB V1 » (validé en production le 15/10, version 1.6). Les fichiers « V1.7 », « TEST » et « SAUVEGARDE » sont des copies de travail : ne jamais y saisir de données.</div>
+
+  <div class="section"><h2>Le parcours d'une commande</h2>
+    <ol class="steps">
+      <li><span><b>Réception :</b> la commande arrive dans l'ORDER HUB. Vérifie client, produit, prix, zone.</span></li>
+      <li><span><b>Confirmation :</b> appel client par les closers ; statut à jour.</span></li>
+      <li><span><b>Transmission DLK :</b> saisie dans le fichier DLK, programmation de la livraison.</span></li>
+      <li><span><b>Suivi :</b> livré, programmé, retour ou annulé. Une commande sans statut est une anomalie.</span></li>
+      <li><span><b>Clôture :</b> preuve de livraison, encaissement COD ou Mobile Money enregistré.</span></li>
+    </ol>
+  </div>
+
+  <div class="section"><h2>Rapprochement et reversement</h2>
+    <ol class="steps">
+      <li><span>Rapprocher commandes livrées, sommes encaissées et justificatifs.</span></li>
+      <li><span>Préparer le décompte marchand : encaissements moins commission ECOM PROPEL.</span></li>
+      <li><span>Contrôler avant envoi : bon bénéficiaire, bon montant, fonds disponibles, pas de doublon.</span></li>
+      <li><span>Effectuer le reversement et isoler la commission dans le coffre Wave.</span></li>
+      <li><span>Enregistrer la référence, classer le reçu dans « 05 — Rapprochements &amp; Reversements », confirmer au marchand.</span></li>
+    </ol>
+    <div class="grid2">
+      <div class="card"><span class="tag t1">N1 · tu exécutes seule</span><p>Un reversement <b>courant, conforme au décompte vérifié</b>, après les quatre contrôles. Aucun accord préalable de Ben n'est attendu.</p></div>
+      <div class="card"><span class="tag t3">N3 · tu suspends et tu escalades</span><p>Écart non expliqué, bénéficiaire incertain, doublon possible ou situation exceptionnelle : tu suspends <b>cette</b> opération uniquement et tu alertes Ben.</p></div>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="card"><h3>Chaque jour</h3><ul class="check"><li>Vérifier et transmettre les nouvelles commandes</li><li>Mettre à jour les statuts</li><li>Point quotidien : commandes, livraisons, encaissements, reversements, incidents, arbitrages</li></ul></div>
+    <div class="card"><h3>Chaque semaine</h3><ul class="check"><li>Cohérence du stock théorique et physique</li><li>Incidents ouverts et résolus</li><li>KPI et rapport hebdomadaire</li></ul></div>
+  </div>
+
+  <div class="section"><h2>Retours, réclamations et incidents</h2>
+    <p>Chaque incident a sa fiche : <code style="font-family:var(--mono)">INC-[numéro]_[CLIENT]_[sujet]</code> avec date, description, cause, solution, responsable et statut, dans « 06 — Incidents &amp; SAV ».</p>
+    <div class="btns"><a class="btn" href="https://drive.google.com/drive/folders/1KKuHltjNgl6_xN2P4q3b0KUWztT5taFU" target="_blank" rel="noopener">Incidents &amp; SAV</a><a class="btn" href="https://drive.google.com/drive/folders/1IIojm1C1dbaIeP8WR6jV3pMGVQ42YJEI" target="_blank" rel="noopener">Rapprochements &amp; Reversements</a><a class="btn" href="https://drive.google.com/drive/folders/1-iraeuZL9E63XYtRMRSAhu0eurHC3Gp7" target="_blank" rel="noopener">Dossiers marchands</a></div>
+  </div>
+
+  <div class="section"><h2>Tutoriels et procédures</h2>
+    <div class="btns">
+      <a class="btn" href="https://drive.google.com/file/d/1iKOoVIu4KgKnybU3lz19Dufi2p4KuF6H/view" target="_blank" rel="noopener">Vidéo : pilote OPS V1</a>
+      <a class="btn" href="https://drive.google.com/file/d/1xjaU5Go_BWw-vAT8MPXkg8gEcc1B8_Ne/view" target="_blank" rel="noopener">Vidéo : DLK call service</a>
+      <a class="btn" href="https://drive.google.com/file/d/1rggxBT4rnkwm14tqGXLh2fmNByn64unI/view" target="_blank" rel="noopener">Vidéo : import manuel</a>
+      <a class="btn" href="https://docs.google.com/document/d/1AAzipgW1eqA-T2VGAB__146lfzTR_1bHpgnkACL--7g/edit" target="_blank" rel="noopener">Prompt d'import manuel</a>
+      <a class="btn" href="https://docs.google.com/spreadsheets/d/1IC1jjo9jy-Dk2rh6sVYvv8grxBP9gFo6lVd2jBhvsKM/edit" target="_blank" rel="noopener">Modèle reporting client</a>
+      <a class="btn" href="https://docs.google.com/document/d/1M9vDmsClzjhR-tgw3dDhtff3K8i3EI5znaBAe0euS8M/edit" target="_blank" rel="noopener">Checklist nouveau client</a>
+      <a class="btn" href="https://drive.google.com/drive/folders/1Zq7cr3rwJxsHIA4WExQylptqjWcr3rhx" target="_blank" rel="noopener">Tout le dossier SOP</a>
+    </div>
+    <div class="note"><b>À recevoir de Ben au transfert :</b> les contacts DLK Express, closers et livreurs, et les modalités d'accès Wave. <b>À écrire ce mois-ci :</b> procédure de rapprochement et reversement (prioritaire), procédure retours et SAV.</div>
+  </div>
+
+  <div class="section"><h2>Mes indicateurs</h2>
+    <div class="kpi"><span>Commandes reçues</span><span>Taux de confirmation</span><span>Taux de livraison</span><span>Délai moyen</span><span>Retours</span><span>Encaissements</span><span>Reversements justifiés</span><span>Écarts non justifiés (cible : 0)</span><span>Incidents ouverts / résolus</span></div>
+  </div>
+</section>
+
+<!-- GROUP -->
+<section class="view" id="v-group" hidden>
+  <div class="hero"><span class="eyebrow" style="color:var(--group)">GROUP MANAGEMENT · Simisola</span><h1>Tenir le fil des décisions</h1>
+  <p class="lead">Simisola centralise les actions, les échéances et les problèmes soulevés. Elle n'exécute pas le travail des responsables.</p></div>
+
+  <div class="section"><h2>Évolution du rôle</h2>
+    <div class="timeline">
+      <div class="card now"><span class="tag t1">Maintenant · octobre</span><h3>Observatrice</h3><p>Comprendre le système, observer les décisions, consigner chaque sollicitation de Ben pendant le test d'autonomie.</p></div>
+      <div class="card"><span class="tag t2">Novembre</span><h3>Secrétaire exécutive</h3><p>Coordination administrative, comptes rendus, suivi des décisions et des échéances.</p></div>
+      <div class="card"><span class="tag t2">Décembre</span><h3>Directrice adjointe</h3><p>Pilotage des réunions, coordination des responsables.</p></div>
+      <div class="card"><span class="tag t2">Janvier 2027</span><h3>Gérante</h3><p>Prise en charge de la gérance <b>si les critères sont validés</b> : autonomie démontrée et conditions de fonctionnement réunies.</p></div>
+    </div>
+    <div class="note">Les pouvoirs de chaque étape s'appliquent seulement après validation par Ben. En octobre, Simisola ne tranche pas : elle consigne et transmet à Ben.</div>
+  </div>
+
+  <div class="grid2">
+    <div class="card"><h3>Chaque jour (octobre)</h3><ul class="check"><li>Inscrire au registre chaque action, décision, blocage et incident signalé</li><li>Noter chaque sollicitation de Ben : légitime (N3) ou évitable</li><li>Relancer les échéances dépassées</li></ul></div>
+    <div class="card"><h3>Chaque semaine</h3><ul class="check"><li>Vérifier que les 3 rapports sont déposés à temps</li><li>Préparer l'ordre du jour de la réunion</li><li>Rédiger le compte rendu et mettre à jour le registre</li></ul></div>
+  </div>
+
+  <div class="section"><h2>Gouvernance</h2>
+    <div class="btns">
+      <a class="btn primary" href="https://docs.google.com/spreadsheets/d/1GQcyxMkGwqfAFBO9d5146dLQid4KLXAW2jHxR_L6XSM/edit" target="_blank" rel="noopener">Registre des actions &amp; décisions</a>
+      <a class="btn" href="https://docs.google.com/spreadsheets/d/1asuZdYzwyyHPkgUhfycRwFeRg-6ystfDq-rkwgHNXVQ/edit" target="_blank" rel="noopener">Tableau KPI du groupe</a>
+      <a class="btn" href="https://drive.google.com/drive/folders/1CsO38vo3e_Y3rk-HsACbxuUw-_HOkh5A" target="_blank" rel="noopener">Rapports des responsables</a>
+      <a class="btn" href="https://docs.google.com/spreadsheets/d/1UFI8TYaRnZBXSj-q9uhz7SZo1gNFQqhgRfaSceyfq_o/edit" target="_blank" rel="noopener">Registre accès &amp; procédures</a>
+      <a class="btn" href="https://docs.google.com/document/d/1hOXACBsPU3r_LSfl_PRosJLfRLOygFJx8kSlyloVRT0/edit" target="_blank" rel="noopener">Charte de délégation</a>
+      <a class="btn" href="https://drive.google.com/drive/folders/1ISaKLhhMVOvAvVcJsRB_FaZ_qonApwLT" target="_blank" rel="noopener">Dossier GROUP</a>
+    </div>
+  </div>
+
+  <div class="section"><h2>Modèles de réunion</h2>
+    <div class="grid2">
+      <div class="copy card"><h3>Ordre du jour (45 min max)</h3>
+<pre id="agenda">RÉUNION STRATÉGIQUE — S[  ] — [date]
+1. Décisions de la semaine passée : statut (5 min)
+2. ACADEMY — Armel : résultats, KPI, blocages (8 min)
+3. LAB — Olivier : résultats, KPI, blocages (8 min)
+4. OPS — Fatima : résultats, KPI, blocages (8 min)
+5. Décisions requises (N3) (10 min)
+6. Procédures à créer ou corriger (4 min)
+7. Actions : qui, quoi, pour quand (2 min)</pre>
+      <button class="btn" type="button" data-copy="agenda">Copier</button></div>
+      <div class="copy card"><h3>Compte rendu</h3>
+<pre id="cr">COMPTE RENDU — S[  ] — [date]
+Présents :
+Décisions prises : (n° registre · décision · décidé par)
+Actions : (n° · action · responsable · échéance)
+Points reportés :
+Procédures à créer :
+Prochaine réunion :</pre>
+      <button class="btn" type="button" data-copy="cr">Copier</button></div>
+    </div>
+  </div>
+</section>
+
+<!-- ESCALADE -->
+<section class="view" id="v-escalade" hidden>
+  <div class="hero"><span class="eyebrow">Charte de délégation V1</span><h1>Qui décide quoi</h1>
+  <p class="lead">En cas de doute sur le niveau, tu suspends l'opération et tu remontes. Avoir accès à un outil ne vaut pas autorisation.</p></div>
+
+  <div class="lvl">
+    <div class="card" style="--lc:var(--n1)"><span class="tag t1">N1</span><h3>Le responsable agit seul</h3><p>Opération courante, prévue par la procédure ou le kit, sans engagement financier hors cadre.</p><p><b>Action :</b> tu fais, tu traces, tu le mentionnes dans ton rapport.</p></div>
+    <div class="card" style="--lc:var(--n2)"><span class="tag t2">N2</span><h3>Coordination via Simisola</h3><p>Sujet entre deux pôles, échéance qui glisse, information manquante, procédure inexistante.</p><p><b>Action :</b> tu écris à Simisola. <b>En octobre</b>, elle consigne et transmet à Ben. Son pouvoir d'arbitrage s'élargira selon son mandat.</p></div>
+    <div class="card" style="--lc:var(--n3)"><span class="tag t3">N3</span><h3>Autorisation de Ben</h3><p>Dépense ou engagement hors budget, publicité, remboursement exceptionnel, prix / offre / commission, contrat, accès administrateur, suppression de données, reversement non conforme, prise de parole publique sensible.</p><p><b>Action :</b> tu demandes avant d'agir.</p></div>
+  </div>
+
+  <div class="section"><h2>Exemples par pôle</h2>
+    <div class="tw"><table>
+      <thead><tr><th>Pôle</th><th>N1 · décide seul</th><th>N3 · demande l'autorisation</th></tr></thead>
+      <tbody>
+        <tr><td><b>ACADEMY</b></td><td>Publier selon le calendrier, répondre, modérer, programmer un live validé, relancer</td><td>Changer le prix Premium, offrir un accès Premium, exclure un membre payant, changer le Classroom</td></tr>
+        <tr><td><b>LAB</b></td><td>Planifier, relancer, devis aux tarifs en vigueur, livrer après contrôle</td><td>Remise hors grille, achat pub, remboursement, prestataire payant, contrat</td></tr>
+        <tr><td><b>OPS</b></td><td>Commandes, coordination DLK, rapprochements, reversement courant conforme au décompte vérifié</td><td>Reversement avec écart, bénéficiaire incertain ou doublon (suspendre) ; correction de données financières validées ; geste commercial</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <div class="section"><h2>Incident critique : alerte dans l'heure</h2>
+    <div class="note crit">
+      <ul>
+        <li>Écart de fonds ou de caisse non expliqué, reversement erroné ou suspect</li>
+        <li>Accès perdu, partagé par erreur ou compromis</li>
+        <li>Panne de l'ORDER HUB, de l'ERP ou de Skool qui bloque le travail</li>
+        <li>Colis ou stock perdu, volé ou endommagé</li>
+        <li>Litige avec menace de plainte ou d'exposition publique</li>
+        <li>Incident grave de modération</li>
+      </ul>
+    </div>
+    <ol class="steps">
+      <li><span>Stopper l'opération concernée (et seulement celle-là).</span></li>
+      <li><span>Envoyer le message ci-dessous à Ben sur WhatsApp, Simisola en copie.</span></li>
+      <li><span>Simisola l'inscrit au registre des actions et décisions.</span></li>
+    </ol>
+    <div class="copy card"><h3>Message d'alerte prêt à copier</h3>
+<pre id="alerte">🔴 INCIDENT — [PÔLE] — [date heure]
+Problème :
+Impact (montant, clients touchés) :
+Action déjà engagée :
+Décision attendue :
+Solution que je recommande :</pre>
+    <button class="btn" type="button" data-copy="alerte">Copier le message</button></div>
+  </div>
+
+  <div class="section"><h2>Test d'autonomie (7 jours)</h2>
+    <p>Pendant 7 jours, Ben ne donne aucune instruction opérationnelle non demandée. Chaque sollicitation est notée par Simisola. Résultat : Autonome · Autonome avec réserves · Non autonome.</p>
+    <div class="btns"><a class="btn" href="https://docs.google.com/document/d/1hOXACBsPU3r_LSfl_PRosJLfRLOygFJx8kSlyloVRT0/edit" target="_blank" rel="noopener">Lire la charte complète</a></div>
+  </div>
+</section>
+
+<!-- REPORTING -->
+<section class="view" id="v-reporting" hidden>
+  <div class="hero"><span class="eyebrow">Reporting</span><h1>Un rapport par semaine, un seul format</h1>
+  <p class="lead">À déposer la veille de la réunion stratégique. Jour et heure : <b>à fixer par Ben</b>.</p></div>
+
+  <div class="section"><h2>Comment faire</h2>
+    <ol class="steps">
+      <li><span>Ouvre le modèle et fais <b>Fichier → Créer une copie</b>.</span></li>
+      <li><span>Renomme-la <code style="font-family:var(--mono)">RAPPORT_HEBDO_[PÔLE]_S[semaine]_2026</code>, par exemple RAPPORT_HEBDO_OPS_S44_2026.</span></li>
+      <li><span>Remplis les 6 parties. Chaque fait a une preuve : un lien, un chiffre, une capture.</span></li>
+      <li><span>Mets à jour ta ligne dans le Tableau KPI.</span></li>
+      <li><span>Laisse le fichier dans le dossier « Reportings hebdomadaires » et préviens Simisola.</span></li>
+    </ol>
+    <div class="btns">
+      <a class="btn primary" href="https://docs.google.com/document/d/15bQK9s8O2kHqGk8kOOtjK6KUESNfGXZ8p28an9lMPXk/edit" target="_blank" rel="noopener">Ouvrir le modèle de rapport</a>
+      <a class="btn" href="https://docs.google.com/spreadsheets/d/1asuZdYzwyyHPkgUhfycRwFeRg-6ystfDq-rkwgHNXVQ/edit" target="_blank" rel="noopener">Tableau KPI</a>
+      <span class="btn wait" aria-disabled="true">Formulaire de rapport : en préparation</span>
+    </div>
+  </div>
+
+  <div class="section"><h2>Les 6 parties</h2>
+    <div class="grid">
+      <div class="card"><h3>1. Résultats</h3><p>Ce qui est terminé, avec la preuve.</p></div>
+      <div class="card"><h3>2. Priorités</h3><p>Les 3 priorités de la semaine suivante.</p></div>
+      <div class="card"><h3>3. Indicateurs</h3><p>Ce qui a bougé, et pourquoi.</p></div>
+      <div class="card"><h3>4. Blocages</h3><p>Ce qui empêche l'exécution normale.</p></div>
+      <div class="card"><h3>5. Décisions requises</h3><p>Qui décide, solution recommandée, date limite.</p></div>
+      <div class="card"><h3>6. Améliorations</h3><p>La procédure qui manque après un incident réel.</p></div>
+    </div>
+  </div>
+</section>
+
+</main>
+<footer><div class="wrap">ECOM PROPEL · Operating Portal V1 · 27/10/2026. Ce portail ne contient aucune donnée client ni financière ; les fichiers restent protégés par les permissions Google Drive. Une erreur ou un lien cassé : signale-le à Simisola.</div></footer>
+
+<script>
+(function(){
+  var views=["accueil","academy","lab","ops","group","escalade","reporting"];
+  function show(){
+    var h=(location.hash||"#accueil").slice(1); if(views.indexOf(h)<0) h="accueil";
+    views.forEach(function(v){document.getElementById("v-"+v).hidden=(v!==h);});
+    document.querySelectorAll("nav.tabs a").forEach(function(a){
+      if(a.getAttribute("href")==="#"+h) a.setAttribute("aria-current","page"); else a.removeAttribute("aria-current");});
+    window.scrollTo(0,0);
+  }
+  window.addEventListener("hashchange",show); show();
+
+  var NOW={
+    armel:{t:"Armel · ACADEMY",a:"Produire l'état des lieux ACADEMY",d:"28/10/2026",r:"Membres, activité 30 jours, contenus manquants, questions sans réponse, prochain live, accès manquants",l:"#academy"},
+    olivier:{t:"Olivier · LAB",a:"Produire l'état des lieux commercial et opérationnel",d:"28/10/2026",r:"Une ligne par dossier actif avec prochaine action datée, facturé, encaissé, coûts et risque",l:"#lab"},
+    fatima:{t:"Fatima · OPS",a:"Produire l'état des lieux OPS",d:"28/10/2026",r:"Commandes par statut, livraisons en retard, encaissements attendus, reversements dus, anomalies, accès manquants",l:"#ops"},
+    simisola:{t:"Simisola · GROUP",a:"Tenir le registre pendant le test d'autonomie",d:"03/11/2026",r:"Chaque action, décision et sollicitation de Ben inscrite au registre, avec le bilan du 04/11",l:"#group"}
+  };
+  var box=document.getElementById("now");
+  function render(p){
+    document.querySelectorAll(".who-pick button").forEach(function(b){b.setAttribute("aria-pressed",b.dataset.p===p?"true":"false");});
+    if(!p||!NOW[p]){box.innerHTML='<p>Choisis ton nom ci-dessus pour voir ta prochaine action.</p>';return;}
+    var n=NOW[p];
+    box.innerHTML='<span class="eyebrow">'+n.t+'</span><h3>'+n.a+'</h3><dl class="mission" style="margin:0"><div><dt>Échéance</dt><dd>'+n.d+'</dd></div><div><dt>Résultat attendu</dt><dd>'+n.r+'</dd></div></dl><div class="btns"><a class="btn int primary" href="'+n.l+'">Ouvrir mon espace</a></div>';
+  }
+  var saved=null; try{saved=localStorage.getItem("ep-who");}catch(e){}
+  render(saved);
+  document.querySelectorAll(".who-pick button").forEach(function(b){
+    b.addEventListener("click",function(){render(b.dataset.p);try{localStorage.setItem("ep-who",b.dataset.p);}catch(e){}});});
+
+  document.querySelectorAll("[data-copy]").forEach(function(b){
+    b.addEventListener("click",function(){
+      var el=document.getElementById(b.dataset.copy), txt=el.textContent;
+      function sel(){var r=document.createRange();r.selectNodeContents(el);var s=getSelection();s.removeAllRanges();s.addRange(r);b.textContent="Texte sélectionné : copie-le";}
+      try{navigator.clipboard.writeText(txt).then(function(){b.textContent="Copié";setTimeout(function(){b.textContent="Copier";},1800);},sel);}catch(e){sel();}
+    });});
+})();
+</script>
+
+</body></html>
